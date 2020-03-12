@@ -10,12 +10,27 @@ async function register(req, res, next) {
     return res.render('register.ejs');
 }
 
-async function login(req, res, next) {
+async function loginPage(req, res, next) {
     console.log('login rout OK');
     return res.render('login.ejs');
 }
 
+async function createUser(req, res, next) {
+    return console.log('createUser');
+}
+
+async function loginAction(req, res, next) {
+    return console.log('loginAction');
+}
+
+async function isAuth(req, res, next) {
+    return console.log('isAuth');
+}
+
 module.exports = {
     register,
-    login,
+    createUser,
+    loginPage,
+    loginAction,
+    isAuth,
 };

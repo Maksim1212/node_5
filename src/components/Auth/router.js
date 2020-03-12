@@ -4,7 +4,6 @@ const AuthUserComponent = require('../Auth');
 
 const csrfProtection = csrf({ cookie: true });
 
-
 /**
  * Express router to mount user related functions on.
  * @type {Express.Router}
@@ -20,9 +19,9 @@ const router = Router();
  * @param {string} path - Express path
  * @param {callback} middleware - Express middleware.
  */
-router.get('/login', AuthUserComponent.login);
+router.get('/login', csrfProtection, AuthUserComponent.loginPage);
 
-// router.get('/login', csrfProtection, AuthUserComponent.login);
+router.post('/login', AuthUserComponent.loginAction);
 
 /**
  * Route serving a user
@@ -33,5 +32,7 @@ router.get('/login', AuthUserComponent.login);
  * @param {callback} middleware - Express middleware.
  */
 router.get('/register', AuthUserComponent.register);
-// router.get('/register', csrfProtection, AuthUserComponent.register);
+
+router.post('/createUser', AuthUserComponent.createUser);
+
 module.exports = router;

@@ -7,6 +7,7 @@ const path = require('path');
 const methodOverride = require('method-override');
 const session = require('express-session');
 const flash = require('connect-flash');
+const express = require('express');
 
 module.exports = {
     /**
@@ -41,6 +42,7 @@ module.exports = {
             saveUninitialized: true,
         }));
         app.use(flash());
+        app.use(express.static('.'));
         app.use((req, res, next) => {
             res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS ');
             res.header('Access-Control-Allow-Credentials', '*');
