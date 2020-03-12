@@ -20,7 +20,9 @@ const router = Router();
  * @param {string} path - Express path
  * @param {callback} middleware - Express middleware.
  */
-router.get('/login', csrfProtection, AuthUserComponent.login);
+router.get('/login', AuthUserComponent.login);
+
+// router.get('/login', csrfProtection, AuthUserComponent.login);
 
 /**
  * Route serving a user
@@ -30,4 +32,6 @@ router.get('/login', csrfProtection, AuthUserComponent.login);
  * @param {string} path - Express path
  * @param {callback} middleware - Express middleware.
  */
-router.get('/register', csrfProtection, AuthUserComponent.register);
+router.get('/register', AuthUserComponent.register);
+// router.get('/register', csrfProtection, AuthUserComponent.register);
+module.exports = router;
