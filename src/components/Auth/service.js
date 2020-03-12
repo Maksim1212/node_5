@@ -24,8 +24,12 @@ function login(email, password) {
     return AuthUserModel.login(email, password);
 }
 
+function createUser(profile) {
+    return AuthUserModel.create(profile);
+}
 
 module.exports = {
     register,
     login,
+    createUser,
 };

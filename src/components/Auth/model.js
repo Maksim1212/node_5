@@ -1,7 +1,7 @@
 const { Schema } = require('mongoose');
 const connections = require('../../config/connection');
 
-const AuthUserSchema = new Schema({
+const UserSchema = new Schema({
     fullName: {
         type: String,
         trim: true,
@@ -19,4 +19,4 @@ const AuthUserSchema = new Schema({
     versionKey: false,
 }, );
 
-module.exports = connections.model('AuthUserModel', AuthUserSchema);
+module.exports = connections.model('AuthUserModel', UserSchema);

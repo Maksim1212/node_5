@@ -8,19 +8,23 @@ class AuthUserValidation extends Validation {
      * @returns
      * @memberof AuthUserValidation
      */
-    register(account) {
+    createUser(profile) {
         return this.Joi
             .object({
-                email: this.Joi.string().email(),
-                password: this.Joi.string().password(),
                 fullName: this.Joi
                     .string()
                     .min(1)
                     .max(30)
                     .required(),
-                _csrf: this.Joi.string(),
+                email: this.Joi.string().email().required(),
+                password: this.Joi
+                    .string()
+                    .min(5)
+                    .max(18)
+                    .required(),
+                // _csrf: this.Joi.string(),
             })
-            .validate(account);
+            .validate(profile);
     }
 
     /**
@@ -33,8 +37,8 @@ class AuthUserValidation extends Validation {
     login(data) {
         return this.Joi
             .object({
-                email: this.Joi.string().email(),
-                password: this.Joi.string().password(),
+                email: this.Joi.string().email().required(),
+                password: this.Joi.string().required(),
                 _csrf: this.Joi.string(),
             })
             .validate(data);
