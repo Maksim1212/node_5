@@ -34,12 +34,12 @@ class AuthUserValidation extends Validation {
      * @memberof AuthUserValidation
      */
 
-    login(data) {
+    loginAction(data) {
         return this.Joi
             .object({
                 email: this.Joi.string().email().required(),
                 password: this.Joi.string().required(),
-                _csrf: this.Joi.string(),
+                // _csrf: this.Joi.string(),
             })
             .validate(data);
     }

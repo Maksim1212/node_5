@@ -20,16 +20,25 @@ function register(profile) {
  * @summary update a user's profile
  * @returns {Promise<void>}
  */
-function login(email, password) {
-    return AuthUserModel.login(email, password);
+function findUser(email) {
+    return AuthUserModel.findOne({ email }).exec();
 }
+
+// function login(email, password) {
+//     return AuthUserModel.login(email, password);
+// }
 
 function createUser(profile) {
     return AuthUserModel.create(profile);
 }
 
+
+function getAccesToken(_id, accesToken) {
+    return AuthUserModel.updateOne({ _id }, { accesToken }).exec();
+}
 module.exports = {
     register,
-    login,
     createUser,
+    findUser,
+    getAccesToken,
 };
