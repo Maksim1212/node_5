@@ -58,15 +58,15 @@ async function createUser(req, res, next) {
         req.body.password = await bcrypt.hash(req.body.password, saltRounds);
         await AuthUserService.createUser(req.body);
 
-        return res.redirect('/v1/auth/login');
+        return res.redirect('/v1/auth/login/');
     } catch (error) {
         if (error instanceof ValidationError) {
             req.flash('error', error.message);
-            return res.redirect('register');
+            return res.redirect('/v1/auth/register/');
         }
         if (error.name === 'MongoError') {
             req.flash('error', { message: dbError });
-            return res.redirect('register');
+            return res.redirect('/v1/auth/register/');
         }
         return next(error);
     }
@@ -102,6 +102,8 @@ async function login(req, res, next) {
         const user = await AuthUserService.findUser(req.body.email);
         if (error || !user) {
             console.log('user not found');
+            req.flash('error', { message: dbError });
+            return res.redirect('/v1/auth/login/');
         }
         if (!error && user) {
             const reqPassword = req.body.password;
@@ -140,6 +142,8 @@ async function login(req, res, next) {
 async function logout(req, res, next) {
     try {
         console.log('logout');
+        await AuthUserService.logout(req.session.user['_id']);
+        console.log(req.session.user['_id']);
         delete req.session.user;
         return res.status(200).redirect('/v1/auth/login');
     } catch (error) {
@@ -157,6 +161,7 @@ function forbidden(req, res) {
     console.log('forbiden');
     return res.render('403.ejs');
 }
+
 module.exports = {
     register,
     createUser,
