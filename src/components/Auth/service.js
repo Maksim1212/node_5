@@ -24,9 +24,13 @@ function findUser(email) {
     return AuthUserModel.findOne({ email }).exec();
 }
 
-// function login(email, password) {
-//     return AuthUserModel.login(email, password);
-// }
+function login(email, password) {
+    return AuthUserModel.login(email, password);
+}
+
+function logout(_id, refreshToken) {
+    return AuthUserModel.updateOne({ _id }, { refreshToken }).exec();
+}
 
 function createUser(profile) {
     return AuthUserModel.create(profile);
@@ -36,9 +40,21 @@ function createUser(profile) {
 function getAccesToken(_id, accesToken) {
     return AuthUserModel.updateOne({ _id }, { accesToken }).exec();
 }
+
+function updateRefreshToken(_id, refreshToken) {
+    return AuthUserModel.updateOne({ _id }, { refreshToken }).exec();
+}
+
+function getUserByRefreshToken(refreshToken) {
+    return AuthUserModel.findOne({ refreshToken }).exec();
+}
 module.exports = {
     register,
     createUser,
     findUser,
     getAccesToken,
+    login,
+    logout,
+    updateRefreshToken,
+    getUserByRefreshToken,
 };

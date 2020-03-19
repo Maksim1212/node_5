@@ -1,16 +1,16 @@
 const { Router } = require('express');
 const csrf = require('csurf');
 const UserComponent = require('../User');
+const { isAuthJWT } = require('../../polices/isAuth');
 
 const csrfProtection = csrf({ cookie: true });
-
 
 /**
  * Express router to mount user related functions on.
  * @type {Express.Router}
  * @const
  */
-const router = Router();
+const userRouter = Router();
 
 /**
  * Route serving list of users.
@@ -20,7 +20,8 @@ const router = Router();
  * @param {string} path - Express path
  * @param {callback} middleware - Express middleware.
  */
-router.get('/', csrfProtection, UserComponent.findAll);
+// userRouter.get('/', isAuthPasport, csrfProtection, UserComponent.findAll);
+userRouter.get('/', isAuthJWT, csrfProtection, UserComponent.findAll);
 
 /**
  * Route serving a user
@@ -30,7 +31,7 @@ router.get('/', csrfProtection, UserComponent.findAll);
  * @param {string} path - Express path
  * @param {callback} middleware - Express middleware.
  */
-router.get('/:id', csrfProtection, UserComponent.findById);
+userRouter.get('/:id', csrfProtection, UserComponent.findById);
 
 /**
  * Route serving a new user
@@ -41,7 +42,7 @@ router.get('/:id', csrfProtection, UserComponent.findById);
  * @param {callback} middleware - Express middleware
  */
 // router.post('/create', UserComponent.create);
-router.post('/', csrfProtection, UserComponent.create);
+userRouter.post('/', isAuthJWT, csrfProtection, UserComponent.create);
 /**
  * Route serving a new user
  * @name /v1/users
@@ -50,7 +51,7 @@ router.post('/', csrfProtection, UserComponent.create);
  * @param {string} path - Express path
  * @param {callback} middleware - Express middleware
  */
-router.put('/', csrfProtection, UserComponent.updateById);
+userRouter.put('/', csrfProtection, UserComponent.updateById);
 
 /**
  * Route serving a new user
@@ -60,6 +61,6 @@ router.put('/', csrfProtection, UserComponent.updateById);
  * @param {string} path -Express path
  * @param {callback} middleware - Express middleware
  */
-router.delete('/', csrfProtection, UserComponent.deleteById);
+userRouter.delete('/', csrfProtection, UserComponent.deleteById);
 
-module.exports = router;
+module.exports = userRouter;

@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const csrf = require('csurf');
 const AuthUserComponent = require('../Auth');
+const Auth = require('../../polices/isAuth');
 
 const csrfProtection = csrf({ cookie: true });
 
@@ -9,7 +10,7 @@ const csrfProtection = csrf({ cookie: true });
  * @type {Express.Router}
  * @const
  */
-const router = Router();
+const authUserRouter = Router();
 
 /**
  * Route serving list of users.
@@ -19,9 +20,15 @@ const router = Router();
  * @param {string} path - Express path
  * @param {callback} middleware - Express middleware.
  */
-router.get('/login', csrfProtection, AuthUserComponent.loginPage);
+authUserRouter.get('/login', csrfProtection, AuthUserComponent.loginPage);
 
-router.post('/login', AuthUserComponent.loginAction);
+authUserRouter.post('/login', AuthUserComponent.login);
+
+authUserRouter.post('/logout', AuthUserComponent.logout);
+
+authUserRouter.get('/401', AuthUserComponent.anauthorized);
+
+authUserRouter.get('/403', AuthUserComponent.forbidden);
 
 /**
  * Route serving a user
@@ -31,8 +38,10 @@ router.post('/login', AuthUserComponent.loginAction);
  * @param {string} path - Express path
  * @param {callback} middleware - Express middleware.
  */
-router.get('/register', AuthUserComponent.register);
+authUserRouter.get('/register', AuthUserComponent.register);
 
-router.post('/createUser', AuthUserComponent.createUser);
+authUserRouter.post('/createUser', AuthUserComponent.createUser);
 
-module.exports = router;
+authUserRouter.post('/updateToken', Auth.isAuthJWT);
+
+module.exports = authUserRouter;

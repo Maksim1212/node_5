@@ -1,37 +1,24 @@
 const bcrypt = require('bcrypt');
-// const passport = require('passport');
 const jwt = require('jsonwebtoken');
 
 const AuthUserService = require('../Auth/service');
 const AuthUserValidation = require('../Auth/validation');
 const ValidationError = require('../../error/ValidationError');
+const { getUserMainFields } = require('../../helpers/userHelper');
 
 const dbError = 'MongoError: E11000 duplicate key error collection';
 const defaultError = 'An error has occurred';
 const saltRounds = 10;
 
-/**
- * @function
- * @param {express.Request} req
- * @param {express.Response} res
- * @param {express.NextFunction} next
- * @returns {Promise<void>}
- */
+async function getJWTTokens(user) {
+    const accessToken = jwt.sign({ user }, process.env.JWT_Secret_KEY, { expiresIn: 5 });
+    const refreshToken = jwt.sign({}, process.env.JWT_Secret_KEY, { expiresIn: '2d' });
 
-async function getAccesToken(req, res, next) {
-    const token = req.header('Authorization').replace('Bearer ', '');
-    const data = jwt.verify(token, process.env.JWT_KEY);
-    try {
-        const user = await AuthUserService.findUser({ _id: req.body.id, 'tokens.token': token });
-        if (!user) {
-            throw new Error();
-        }
-        req.user = user;
-        req.token = token;
-        next();
-    } catch (error) {
-        res.status(401).send({ error: 'Not authorized to access this resource' });
-    }
+    await AuthUserService.updateRefreshToken(user, refreshToken);
+    return {
+        accessToken,
+        refreshToken,
+    };
 }
 
 /**
@@ -69,11 +56,9 @@ async function createUser(req, res, next) {
         }
 
         req.body.password = await bcrypt.hash(req.body.password, saltRounds);
-        req.body.token = await AuthUserService.generateAuthTpken;
-        // const token = await getAccesToken(req.body.user.id);
         await AuthUserService.createUser(req.body);
 
-        return res.redirect('/v1/users');
+        return res.redirect('/v1/auth/login');
     } catch (error) {
         if (error instanceof ValidationError) {
             req.flash('error', error.message);
@@ -94,7 +79,7 @@ async function createUser(req, res, next) {
  * @param {express.NextFunction} next
  * @returns {Promise<void>}
  */
-async function loginPage(req, res, next) {
+function loginPage(req, res) {
     console.log('login rout OK');
     return res.render('login.ejs');
 }
@@ -106,9 +91,9 @@ async function loginPage(req, res, next) {
  * @param {express.NextFunction} next
  * @returns {Promise<void>}
  */
-async function loginAction(req, res, next) {
+async function login(req, res, next) {
     try {
-        const { error } = AuthUserValidation.loginAction(req.body);
+        const { error } = AuthUserValidation.login(req.body);
 
         if (error) {
             throw new ValidationError(error.details);
@@ -122,19 +107,18 @@ async function loginAction(req, res, next) {
             const reqPassword = req.body.password;
             const userPassword = user.password;
             const passwordsMatch = await bcrypt.compare(reqPassword, userPassword);
-
             if (passwordsMatch) {
-                // const token = await getAccesToken(user.id);
-
-                return res.status(200).json({
-                    data: {
-                        user,
-                        // token,
-                    },
-                });
+                const token = await getJWTTokens(user.id);
+                let data = {};
+                data = {
+                    ...getUserMainFields(user),
+                    token,
+                };
+                req.session.user = data;
+                return res.redirect('/v1/users');
             }
         } else {
-            console.log('user dont found');
+            console.log('user do not found');
         }
 
         return res.status(200);
@@ -153,9 +137,33 @@ async function loginAction(req, res, next) {
     }
 }
 
+async function logout(req, res, next) {
+    try {
+        console.log('logout');
+        delete req.session.user;
+        return res.status(200).redirect('/v1/auth/login');
+    } catch (error) {
+        req.flash('error', { message: defaultError });
+        return next(error);
+    }
+}
+
+function anauthorized(req, res) {
+    console.log('UNAUTHORIZED');
+    return res.render('401.ejs');
+}
+
+function forbidden(req, res) {
+    console.log('forbiden');
+    return res.render('403.ejs');
+}
 module.exports = {
     register,
     createUser,
     loginPage,
-    loginAction,
+    logout,
+    login,
+    getJWTTokens,
+    forbidden,
+    anauthorized,
 };

@@ -54,9 +54,10 @@ input:focus {
     box-shadow: 0 0 0 0 !important;
 }
 
-.remember {
+
+/* .remember {
     color: white;
-}
+} */
 
 .remember input {
     width: 20px;
@@ -77,7 +78,7 @@ input:focus {
 }
 
 .links {
-    color: white;
+    color: orange;
 }
 
 .links a {

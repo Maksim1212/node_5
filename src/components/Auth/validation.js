@@ -34,7 +34,7 @@ class AuthUserValidation extends Validation {
      * @memberof AuthUserValidation
      */
 
-    loginAction(data) {
+    login(data) {
         return this.Joi
             .object({
                 email: this.Joi.string().email().required(),
@@ -42,6 +42,19 @@ class AuthUserValidation extends Validation {
                 // _csrf: this.Joi.string(),
             })
             .validate(data);
+    }
+
+    /**
+     * @param {String} data.refreshToken
+     * @returns
+     * @memberof AuthUserValidation
+     */
+
+    updateToken(data) {
+        return this.Joi
+            .object({
+                refreshToken: this.Joi.string().required(),
+            }).validate(data);
     }
 }
 module.exports = new AuthUserValidation();
