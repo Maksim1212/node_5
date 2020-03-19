@@ -24,7 +24,7 @@ authUserRouter.get('/login', csrfProtection, AuthUserComponent.loginPage);
 
 authUserRouter.post('/login', AuthUserComponent.login);
 
-authUserRouter.post('/logout', AuthUserComponent.logout);
+authUserRouter.get('/logout', AuthUserComponent.logout);
 
 authUserRouter.get('/401', AuthUserComponent.anauthorized);
 
