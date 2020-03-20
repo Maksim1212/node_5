@@ -37,7 +37,7 @@ module.exports = {
         app.use(methodOverride('_method'));
         // override method
         app.use(session({
-            cookie: { maxAge: 60000 },
+            cookie: { maxAge: 3600000 },
             secret: 'keyboard cat',
             resave: false,
             saveUninitialized: true,

@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const AuthUserService = require('../Auth/service');
 const AuthUserValidation = require('../Auth/validation');
 const ValidationError = require('../../error/ValidationError');
-const { getUserMainFields } = require('../../helpers/userHelper');
+const { getUserMainFields } = require('../../helpers/user');
 
 const dbError = 'MongoError: E11000 duplicate key error collection';
 const defaultError = 'An error has occurred';
