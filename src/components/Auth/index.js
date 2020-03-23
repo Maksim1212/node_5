@@ -8,6 +8,8 @@ const { getUserMainFields } = require('../../helpers/user');
 
 const dbError = 'MongoError: E11000 duplicate key error collection';
 const defaultError = 'An error has occurred';
+const userNotFound = 'This Email not found';
+const wrongPassword = 'Wrong Password';
 const saltRounds = 10;
 
 async function getJWTTokens(user) {
@@ -28,7 +30,7 @@ async function getJWTTokens(user) {
  * @param {express.NextFunction} next
  * @returns {Promise<void>}
  */
-async function register(req, res, next) {
+function register(req, res, next) {
     try {
         console.log('register rout Ok');
         return res.render('register.ejs', {
@@ -109,29 +111,28 @@ async function login(req, res, next) {
         }
 
         const user = await AuthUserService.findUser(req.body.email);
-        if (error || !user) {
+        if (!user) {
             console.log('user not found');
-            req.flash('error', error.message);
+            req.flash('error', { message: userNotFound });
             return res.redirect('/v1/auth/login/');
         }
         if (!error && user) {
             const reqPassword = req.body.password;
             const userPassword = user.password;
             const passwordsMatch = await bcrypt.compare(reqPassword, userPassword);
-            if (passwordsMatch) {
-                const token = await getJWTTokens(user.id);
-                let data = {};
-                data = {
-                    ...getUserMainFields(user),
-                    token,
-                };
-                req.session.user = data;
-                return res.redirect('/v1/users/');
+            if (!passwordsMatch) {
+                req.flash('error', { message: wrongPassword });
+                return res.redirect('/v1/auth/login/');
             }
-        } else {
-            console.log('user do not found');
+            const token = await getJWTTokens(user.id);
+            let data = {};
+            data = {
+                ...getUserMainFields(user),
+                token,
+            };
+            req.session.user = data;
+            return res.redirect('/v1/users/');
         }
-
         return res.status(200);
     } catch (error) {
         if (error instanceof ValidationError) {
