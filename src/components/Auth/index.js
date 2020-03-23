@@ -32,7 +32,7 @@ async function register(req, res, next) {
     try {
         console.log('register rout Ok');
         return res.render('register.ejs', {
-            // csrfToken: req.csrfToken(),
+            csrfToken: req.csrfToken(),
             errors: req.flash('error'),
         });
     } catch (error) {
@@ -40,6 +40,7 @@ async function register(req, res, next) {
         return next(error);
     }
 }
+
 
 /**
  * @function
@@ -79,9 +80,17 @@ async function createUser(req, res, next) {
  * @param {express.NextFunction} next
  * @returns {Promise<void>}
  */
-function loginPage(req, res) {
-    console.log('login rout OK');
-    return res.render('login.ejs');
+function loginPage(req, res, next) {
+    try {
+        console.log('login rout OK');
+        return res.render('login.ejs', {
+            csrfToken: req.csrfToken(),
+            errors: req.flash('error'),
+        });
+    } catch (error) {
+        req.flash('error', { message: defaultError });
+        return next(error);
+    }
 }
 
 /**
@@ -117,7 +126,7 @@ async function login(req, res, next) {
                     token,
                 };
                 req.session.user = data;
-                return res.redirect('/v1/auth/login/');
+                return res.redirect('/v1/users/');
             }
         } else {
             console.log('user do not found');

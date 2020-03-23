@@ -22,7 +22,7 @@ class AuthUserValidation extends Validation {
                     .min(5)
                     .max(18)
                     .required(),
-                // _csrf: this.Joi.string(),
+                _csrf: this.Joi.string(),
             })
             .validate(profile);
     }
@@ -39,7 +39,7 @@ class AuthUserValidation extends Validation {
             .object({
                 email: this.Joi.string().email().required(),
                 password: this.Joi.string().required(),
-                // _csrf: this.Joi.string(),
+                _csrf: this.Joi.string(),
             })
             .validate(data);
     }

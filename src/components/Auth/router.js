@@ -22,7 +22,7 @@ const authUserRouter = Router();
  */
 authUserRouter.get('/login', csrfProtection, AuthUserComponent.loginPage);
 
-authUserRouter.post('/login', AuthUserComponent.login);
+authUserRouter.post('/login', csrfProtection, AuthUserComponent.login);
 
 authUserRouter.get('/logout', AuthUserComponent.logout);
 
@@ -40,9 +40,9 @@ authUserRouter.get('/private', AuthUserComponent.passport);
  * @param {string} path - Express path
  * @param {callback} middleware - Express middleware.
  */
-authUserRouter.get('/register', AuthUserComponent.register);
+authUserRouter.get('/register', csrfProtection, AuthUserComponent.register);
 
-authUserRouter.post('/createUser', AuthUserComponent.createUser);
+authUserRouter.post('/createUser', csrfProtection, AuthUserComponent.createUser);
 
 authUserRouter.post('/updateToken', Auth.isAuthJWT);
 

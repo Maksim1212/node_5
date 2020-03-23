@@ -38,6 +38,9 @@
                             </div>
                             <input type="password" name="password" class="form-control" placeholder="password">
                         </div>
+
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
                         <div class="form-group">
                             <input type="submit" value="Register" class="btn float-right login_btn">
                         </div>
