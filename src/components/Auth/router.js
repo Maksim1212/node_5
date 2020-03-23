@@ -30,6 +30,8 @@ authUserRouter.get('/401', AuthUserComponent.anauthorized);
 
 authUserRouter.get('/403', AuthUserComponent.forbidden);
 
+authUserRouter.get('/private', AuthUserComponent.passport);
+
 /**
  * Route serving a user
  * @name /v1/users/:id

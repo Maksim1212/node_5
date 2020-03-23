@@ -7,6 +7,7 @@ require('./tests/ExistsFiles.test');
 // * SERVICES
 // **********
 require('./tests/UserService.test.js');
+require('./tests/AuthUserService.test.js');
 
 // **************************
 // * CONTROLLERS (ROUTES)

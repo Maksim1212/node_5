@@ -102,7 +102,7 @@ async function login(req, res, next) {
         const user = await AuthUserService.findUser(req.body.email);
         if (error || !user) {
             console.log('user not found');
-            req.flash('error', { message: dbError });
+            req.flash('error', error.message);
             return res.redirect('/v1/auth/login/');
         }
         if (!error && user) {
@@ -117,7 +117,7 @@ async function login(req, res, next) {
                     token,
                 };
                 req.session.user = data;
-                return res.redirect('/v1/users');
+                return res.redirect('/v1/auth/login/');
             }
         } else {
             console.log('user do not found');
@@ -127,12 +127,12 @@ async function login(req, res, next) {
     } catch (error) {
         if (error instanceof ValidationError) {
             req.flash('error', error.message);
-            return res.redirect('/v1/users');
+            return res.redirect('/v1/auth/login/');
         }
 
         if (error.name === 'MongoError') {
             console.log(req.flash('error', { message: defaultError }));
-            return res.redirect('/v1/users');
+            return res.redirect('/v1/auth/login/');
         }
 
         return next(error);
@@ -162,6 +162,11 @@ function forbidden(req, res) {
     return res.render('403.ejs');
 }
 
+function passport(req, res) {
+    console.log('passport');
+    return res.render('private.ejs');
+}
+
 module.exports = {
     register,
     createUser,
@@ -171,4 +176,5 @@ module.exports = {
     getJWTTokens,
     forbidden,
     anauthorized,
+    passport,
 };

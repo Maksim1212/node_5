@@ -1,4 +1,7 @@
 const jwt = require('jsonwebtoken');
+const passport = require('passport');
+
+const { Strategy } = require('passport-local');
 const AuthUserService = require('../components/Auth/service');
 const { getJWTTokens } = require('../components/Auth/index');
 
@@ -31,6 +34,12 @@ async function isAuthJWT(req, res, next) {
     return res.status(200);
 }
 
+async function isAuthPassport(req, res, next) {
+
+}
+
+
 module.exports = {
     isAuthJWT,
+    isAuthPassport,
 };
