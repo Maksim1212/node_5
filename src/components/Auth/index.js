@@ -32,7 +32,7 @@ async function getJWTTokens(user) {
  */
 function register(req, res, next) {
     try {
-        console.log('register rout Ok');
+        //  console.log('register rout Ok');
         return res.render('register.ejs', {
             csrfToken: req.csrfToken(),
             errors: req.flash('error'),
@@ -84,8 +84,7 @@ async function createUser(req, res, next) {
  */
 function loginPage(req, res, next) {
     try {
-        console.log('login rout OK');
-        return res.render('login.ejs', {
+        return res.status(200).render('login.ejs', {
             csrfToken: req.csrfToken(),
             errors: req.flash('error'),
         });
@@ -112,9 +111,11 @@ async function login(req, res, next) {
 
         const user = await AuthUserService.findUser(req.body.email);
         if (!user) {
-            console.log('user not found');
+            // console.log('user not found');
             req.flash('error', { message: userNotFound });
-            return res.redirect('/v1/auth/login/');
+
+            res.status(401).redirect('/v1/auth/login/');
+            return res;
         }
         if (!error && user) {
             const reqPassword = req.body.password;
@@ -163,12 +164,12 @@ async function logout(req, res, next) {
 }
 
 function anauthorized(req, res) {
-    console.log('UNAUTHORIZED');
+    // console.log('UNAUTHORIZED');
     return res.render('401.ejs');
 }
 
 function forbidden(req, res) {
-    console.log('forbiden');
+    // console.log('forbiden');
     return res.render('403.ejs');
 }
 
