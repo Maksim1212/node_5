@@ -7,9 +7,9 @@ const AuthUserModel = require('../Auth/model');
  * @summary create a new user
  * @returns {Promise<UserModel>}
  */
-function register(profile) {
-    return AuthUserModel.register(profile);
-}
+// function register(profile) {
+//     return AuthUserModel.register(profile);
+// }
 
 /**
  * Find a user by id and update his profile
@@ -49,7 +49,7 @@ function getUserByRefreshToken(refreshToken) {
     return AuthUserModel.findOne({ refreshToken }).exec();
 }
 module.exports = {
-    register,
+    // register,
     createUser,
     findUser,
     getAccesToken,
