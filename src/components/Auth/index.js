@@ -13,6 +13,7 @@ const wrongPassword = 'Wrong Password';
 const saltRounds = 10;
 
 async function getJWTTokens(user) {
+    console.log(user);
     const accessToken = jwt.sign({ user }, process.env.JWT_Secret_KEY, { expiresIn: 5 });
     const refreshToken = jwt.sign({}, process.env.JWT_Secret_KEY, { expiresIn: '2d' });
 

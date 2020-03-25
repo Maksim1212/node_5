@@ -80,7 +80,7 @@ async function create(req, res, next) {
 
         await UserService.create(req.body);
 
-        return res.redirect('/v1/users');
+        return res.redirect(200, '/v1/users');
     } catch (error) {
         if (error instanceof ValidationError) {
             req.flash('error', error.message);
@@ -111,7 +111,7 @@ async function updateById(req, res, next) {
 
         await UserService.updateById(req.body.id, req.body);
 
-        return res.redirect('/v1/users');
+        return res.redirect(200, '/v1/users');
     } catch (error) {
         if (error instanceof ValidationError) {
             req.flash('error', error.message);
@@ -143,7 +143,7 @@ async function deleteById(req, res, next) {
 
         await UserService.deleteById(req.body.id);
 
-        return res.redirect('/v1/users');
+        return res.redirect(200, '/v1/users');
     } catch (error) {
         if (error instanceof ValidationError) {
             req.flash('error', error.message);
