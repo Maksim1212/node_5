@@ -3,19 +3,24 @@ const UtilService = require('../../src/components/User/service');
 
 const { expect } = chai;
 
-const user = {
-    id: '5e5803e5b8f67715e823b1e4',
-    email: 'test@ukr.net',
-    fullName: 'Net Ukr',
-};
 const fullName = 'New Name';
 const newUser = {
     email: 'chaiTestUser@gmail.com',
     fullName: 'Chai Test',
-    // id: '5e79dc1c12fecb442a87e49b',
 };
+let newUserId = '';
 
 describe('UserComponent -> service', () => {
+    it('UserComponent -> service -> create', (done) => {
+        UtilService.create(newUser)
+            .then((res) => {
+                newUserId = res['_id'];
+                const expectBody = expect(res);
+                expectBody.to.be.an('object');
+                done();
+            })
+            .catch(done);
+    });
     it('UserComponent -> service -> findAll', (done) => {
         UtilService.findAll()
             .then((res) => {
@@ -26,27 +31,16 @@ describe('UserComponent -> service', () => {
             .catch(done);
     });
     it('UserComponent -> service -> findById', (done) => {
-        UtilService.findById(user.id)
+        UtilService.findById(newUserId)
             .then((res) => {
                 const expectBody = expect(res);
                 expectBody.to.be.an('object');
-                done();
-            })
-            .catch(done);
-    });
-    it('UserComponent -> service -> create', (done) => {
-        UtilService.create(newUser)
-            .then((res) => {
-                const expectBody = expect(res);
-                expectBody.to.be.an('object');
-                const userDel = expect(res);
-                console.log(userDel);
                 done();
             })
             .catch(done);
     });
     it('UserComponent -> service -> updateById', (done) => {
-        UtilService.updateById(newUser.id, { fullName })
+        UtilService.updateById(newUserId, { fullName })
             .then((res) => {
                 const expectBody = expect(res);
                 expectBody.to.be.an('object').and.to.have.keys('n', 'nModified', 'ok');
@@ -55,7 +49,7 @@ describe('UserComponent -> service', () => {
             .catch(done);
     });
     it('UserComponent -> service -> deleteById', (done) => {
-        UtilService.deleteById(newUser.id)
+        UtilService.deleteById(newUserId)
             .then((res) => {
                 const expectBody = expect(res);
                 expectBody.to.be.an('object').and.to.have.keys('n', 'ok', 'deletedCount');
