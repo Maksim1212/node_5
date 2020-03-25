@@ -4,7 +4,12 @@ const AuthUserComponent = require('../Auth');
 const Auth = require('../../polices/isAuth');
 
 const csrfProtection = csrf({ cookie: true });
+// const isTest = process.env.NODE_ENV === 'test';
+// let csrfProtection = csrf({ cookie: true });
 
+// if (isTest) {
+//     csrfProtection = csrf({ cookie: false });
+// }
 /**
  * Express router to mount user related functions on.
  * @type {Express.Router}

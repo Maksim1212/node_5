@@ -4,7 +4,6 @@ const cheerio = require('cheerio');
 const jwt = require('jsonwebtoken');
 const Token = require('csrf');
 const UserService = require('../../src/components/User/service');
-const AuthUserService = require('../../src/components/Auth/service');
 const server = require('../../src/server/server');
 
 const { expect } = chai;
@@ -60,14 +59,19 @@ describe('AuthUserComponent -> controller', () => {
     //         .type('form')
     //         .set('Cookie', '_csrf=test')
     //         .set({
-    //             'xsrf-token': 'gaabrhn3--fmoXcOhmwoS6noe1TYvaDHzpYY',
+    //             testUser,
     //         })
-    //         .send(() => {
-    //             AuthUserService.login(testUser);
-    //             //done();
+    //         .expect(302, done);
+    // });
+    // it('Register Action', (done) => {
+    //     request(server)
+    //         .post('/v1/auth/createUser')
+    //         // .type('form')
+    //         // .set('Cookie', '_csrf=test')
+    //         .set({
+    //             testUser,
     //         })
-    //         .expect(302, done)
-    //         .catch(done);
+    //         .expect(302, done);
     // });
 });
 
