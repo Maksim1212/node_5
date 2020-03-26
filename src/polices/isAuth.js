@@ -1,10 +1,17 @@
 const jwt = require('jsonwebtoken');
-const passport = require('passport');
+// const passport = require('passport');
 
-const { Strategy } = require('passport-local');
+// const { Strategy } = require('passport-local');
 const AuthUserService = require('../components/Auth/service');
 const { getJWTTokens } = require('../components/Auth/index');
 
+/**
+ * @function
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ * @returns {Promise < void >}
+ */
 async function isAuthJWT(req, res, next) {
     if (!req.session.user) {
         return res.redirect('/v1/auth/401/');
@@ -13,13 +20,13 @@ async function isAuthJWT(req, res, next) {
     const tokens = await getJWTTokens(req.session.user.id);
     let decoded;
     try {
-        decoded = jwt.verify(token, process.env.JWT_Secret_KEY);
+        decoded = jwt.verify(token, process.env.JWT_Access_Secret_KEY);
     } catch (error) {
         if (error.message === 'jwt expired') {
             const user = await AuthUserService.getUserByRefreshToken(req.session.user.token.refreshToken);
             req.session.user.token.accessToken = tokens.accessToken;
             token = req.session.user.token.accessToken;
-            decoded = jwt.verify(token, process.env.JWT_Secret_KEY);
+            decoded = jwt.verify(token, process.env.JWT_Access_Secret_KEY);
             if (!user) {
                 return res.redirect('/v1/auth/401/');
             }
@@ -35,7 +42,7 @@ async function isAuthJWT(req, res, next) {
 }
 
 async function isAuthPassport(req, res, next) {
-
+    // pasport auth
 }
 
 

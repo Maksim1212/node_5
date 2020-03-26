@@ -7,13 +7,13 @@ const newUser = {
     email: 'chaiTestUser@gmail.com',
     password: '123456',
 };
-let newUserEmail = '';
+let newUserId = '';
 
 describe('AuthUserComponent -> service', () => {
     it('AuthUserComponent -> service -> create', (done) => {
         UtilService.createUser(newUser)
             .then((res) => {
-                newUserEmail = res.email;
+                newUserId = res['_id'];
                 const expectBody = expect(res);
                 expectBody.to.be.an('object');
                 done();
@@ -21,7 +21,7 @@ describe('AuthUserComponent -> service', () => {
             .catch(done);
     });
     it('AuthUserComponent -> service -> findUser', (done) => {
-        UtilService.findUser(newUserEmail)
+        UtilService.findUser(newUser.email)
             .then((res) => {
                 const expectBody = expect(res);
                 expectBody.to.be.an('object');
@@ -29,22 +29,13 @@ describe('AuthUserComponent -> service', () => {
             })
             .catch(done);
     });
-    // it('AuthUserComponent -> service -> updateById', (done) => {
-    //     UtilService.updateById(newUserId, { fullName })
-    //         .then((res) => {
-    //             const expectBody = expect(res);
-    //             expectBody.to.be.an('object').and.to.have.keys('n', 'nModified', 'ok');
-    //             done();
-    //         })
-    //         .catch(done);
-    // });
-    // it('AuthUserComponent -> service -> deleteById', (done) => {
-    //     UtilService.deleteById(newUserId)
-    //         .then((res) => {
-    //             const expectBody = expect(res);
-    //             expectBody.to.be.an('object').and.to.have.keys('n', 'ok', 'deletedCount');
-    //             done();
-    //         })
-    //         .catch(done);
-    // });
+    it('AuthUserComponent -> service -> deleteUserByID', (done) => {
+        UtilService.deleteUserById(newUserId)
+            .then((res) => {
+                const expectBody = expect(res);
+                expectBody.to.be.an('object').and.to.have.keys('n', 'ok', 'deletedCount');
+                done();
+            })
+            .catch(done);
+    });
 });

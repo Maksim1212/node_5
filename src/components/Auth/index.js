@@ -13,9 +13,8 @@ const wrongPassword = 'Wrong Password';
 const saltRounds = 10;
 
 async function getJWTTokens(user) {
-    console.log(user);
-    const accessToken = jwt.sign({ user }, process.env.JWT_Secret_KEY, { expiresIn: 5 });
-    const refreshToken = jwt.sign({}, process.env.JWT_Secret_KEY, { expiresIn: '2d' });
+    const accessToken = jwt.sign({ user }, process.env.JWT_Access_Secret_KEY, { expiresIn: 5 });
+    const refreshToken = jwt.sign({}, process.env.JWT_Refresh_Secret_KEY, { expiresIn: '2d' });
 
     await AuthUserService.updateRefreshToken(user, refreshToken);
     return {
@@ -33,7 +32,6 @@ async function getJWTTokens(user) {
  */
 function register(req, res, next) {
     try {
-        //  console.log('register rout Ok');
         return res.render('register.ejs', {
             csrfToken: req.csrfToken(),
             errors: req.flash('error'),
@@ -112,7 +110,6 @@ async function login(req, res, next) {
 
         const user = await AuthUserService.findUser(req.body.email);
         if (!user) {
-            // console.log('user not found');
             req.flash('error', { message: userNotFound });
 
             res.status(401).redirect('/v1/auth/login/');
@@ -151,11 +148,17 @@ async function login(req, res, next) {
     }
 }
 
+/**
+ * @function
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ * @returns {Promise < void >}
+ */
 async function logout(req, res, next) {
     try {
         console.log('logout');
         await AuthUserService.logout(req.session.user['_id']);
-        console.log(req.session.user['_id']);
         delete req.session.user;
         return res.status(200).redirect('/v1/auth/login');
     } catch (error) {
@@ -164,16 +167,63 @@ async function logout(req, res, next) {
     }
 }
 
+/**
+ * @function
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @returns {Promise < void >}
+ */
 function anauthorized(req, res) {
-    // console.log('UNAUTHORIZED');
     return res.render('401.ejs');
 }
 
+/**
+ * @function
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @returns {Promise < void >}
+ */
 function forbidden(req, res) {
-    // console.log('forbiden');
     return res.render('403.ejs');
 }
 
+/**
+ * @function
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ * @returns {Promise<void>}
+ */
+async function deleteById(req, res, next) {
+    try {
+        const { error } = AuthUserValidation.deleteById(req.body);
+
+        if (error) {
+            throw new ValidationError(error.details);
+        }
+
+        await AuthUserService.deleteById(req.body.id);
+
+        return res.status(200);
+    } catch (error) {
+        if (error instanceof ValidationError) {
+            req.flash('error', error.message);
+            return res.status(401);
+        }
+        if (error.name === 'MongoError') {
+            console.log(req.flash('error', { message: defaultError }));
+            return res.status(500);
+        }
+        return next(error);
+    }
+}
+
+/**
+ * @function
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @returns {Promise < void >}
+ */
 function passport(req, res) {
     console.log('passport');
     return res.render('private.ejs');
@@ -189,4 +239,5 @@ module.exports = {
     forbidden,
     anauthorized,
     passport,
+    deleteById,
 };
